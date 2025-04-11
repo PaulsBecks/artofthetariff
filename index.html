@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>World Map - Red Scale by Value</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chroma.js for color scaling -->
+  <script src="https://unpkg.com/chroma-js@2.4.2/chroma.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+
+  <script>
+    // Load country values from a JSON file data.json
+    fetch('data.json')
+      .then(response => response.json())
+      .then(data => {
+        // Initialize the map with the loaded data
+        initMap(data);
+      })
+      .catch(error => console.error('Error loading data:', error));
+
+    function initMap(countryValues) {
+      const minValue = 0;
+      const maxValue = 100;
+
+      const map = L.map('map').setView([20, 0], 2);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Color scale from light to dark red
+      const colorScale = chroma.scale(['#ffffff', '#990000']).domain([minValue, maxValue]);
+
+      // Load GeoJSON data for countries
+      fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json')
+        .then(res => res.json())
+        .then(data => {
+          L.geoJSON(data, {
+            style: feature => {
+              const code = feature.id;
+              const value = countryValues[code] || 0;
+              return {
+                fillColor: colorScale(value).hex(),
+                weight: 1,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.8
+              };
+            },
+            onEachFeature: (feature, layer) => {
+              const code = feature.id;
+              const value = countryValues[code] || 0;
+              layer.bindPopup(`<strong>${feature.properties.name}</strong>: ${value}%`);
+            }
+          }).addTo(map);
+        });
+    }
+  </script>
+</body>
+
+</html>

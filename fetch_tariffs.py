@@ -15,10 +15,10 @@ notes = request.json()
 # with open("tariffs.json", "r") as f:
 #     notes = json.load(f)
 
-with open("eu_country_codes.json", "r") as f:
+with open("country_codes/eu.json", "r") as f:
     eu_country_codes = json.load(f)
     
-with open("non_mfn_country_codes.json", "r") as f:
+with open("country_codes/non_mfn.json", "r") as f:
     non_mfn_country_codes = json.load(f)
 
 def get_value_from_description(description):
@@ -26,7 +26,6 @@ def get_value_from_description(description):
     Extracts the value from the description string.
     """
     value = re.findall(r'\d+', description)
-    print(value, description)
     if len(value) == 1:
         return value[0]
     return None
@@ -35,7 +34,7 @@ def get_value_from_description(description):
 tariffs = {}
 # Iterate through the notes and extract the tariff values
 for note in notes:
-    print(f"Processing: {note["htsno"]}")
+    print(f"Processing: {note['htsno']}")
     description = note["description"]
     # If the description contains "any country" or "European Union", set the tariff for all countries
     if "any country" in description:

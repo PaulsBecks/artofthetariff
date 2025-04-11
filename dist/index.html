@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>World Map - Red Scale by Value</title>
+  <title>🥭's Art of the Tariff</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet CSS & JS -->
@@ -24,10 +24,35 @@
       height: 100vh;
       width: 100vw;
     }
+
+    nav {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100vw;
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      background-color: rgba(255, 255, 255);
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+
+    nav h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
   </style>
 </head>
 
 <body>
+  <!-- Nav -->
+  <nav>
+    <h1>🥭's Art of the Tariff</h1>
+  </nav>
+  <!-- Map -->
   <div id="map"></div>
 
   <script>
@@ -49,6 +74,11 @@
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
+      // remove default zoom control
+      map.zoomControl.remove();
+
+      // position map navigation controls bottom right
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
 
       // Color scale from light to dark red
       const colorScale = chroma.scale(['#ffffff', '#990000']).domain([minValue, maxValue]);

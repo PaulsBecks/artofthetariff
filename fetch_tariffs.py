@@ -66,4 +66,4 @@ for note in notes:
                 tariffs[country.alpha_3] = value
 
 json.dumps(tariffs, indent=4)
-open("data.json", "w").write(json.dumps(tariffs, indent=4))
+open("dist/data.json", "w").write(json.dumps(tariffs, indent=4))
